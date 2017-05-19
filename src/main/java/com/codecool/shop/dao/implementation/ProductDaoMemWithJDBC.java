@@ -12,11 +12,22 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <h1>ProductDaoMemWithJDBC class</h1> inherits from JDBCConnection
+ *
+ * @author arinyu
+ */
 public class ProductDaoMemWithJDBC extends JDBCConnection implements ProductDaoWithJDBC {
 
     public ProductDaoMemWithJDBC() throws IOException {
     }
 
+    /**
+     * Lists all products from the SQL database
+     *
+     * @throws IOException If something went wrong
+     * @return List of all products
+     */
     @Override
     public List<Product> listAllProducts() throws IOException {
         ProductCategoryDaoWithJDBC productCategoryDao = new ProductCategoryDaoMemWithJDBC();
@@ -27,7 +38,7 @@ public class ProductDaoMemWithJDBC extends JDBCConnection implements ProductDaoW
 
         try {
             Connection connection = getConnection();
-            Statement statement =connection.createStatement();
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
                 int prodCatId = resultSet.getInt("productCategoryId");
@@ -52,6 +63,12 @@ public class ProductDaoMemWithJDBC extends JDBCConnection implements ProductDaoW
         return resultList;
     }
 
+    /**
+     * Lists products by the given supplier name from the SQL database
+     *
+     * @throws IOException If something went wrong
+     * @return List of the filtered products
+     */
     @Override
     public List<Product> getProductBy(Supplier supplier) throws IOException {
         String query = "SELECT * FROM products WHERE supplierId = " + supplier.getSupplierId() + ";";
@@ -83,8 +100,14 @@ public class ProductDaoMemWithJDBC extends JDBCConnection implements ProductDaoW
         return resultList;
     }
 
+    /**
+     * Lists products by the given category name from the SQL database
+     *
+     * @throws IOException If something went wrong
+     * @return List of the filtered products
+     */
     @Override
-    public  List<Product> getProductBy(ProductCategory productCategory) throws IOException {
+    public List<Product> getProductBy(ProductCategory productCategory) throws IOException {
         String query = "SELECT * FROM products WHERE productCategoryId = " + productCategory.getProductCategoryId() + ";";
         List<Product> resultList = new ArrayList<>();
         SupplierDaoWithJDBC supplierDaoWithJDBC = new SupplierDaoMemWithJDBC();
@@ -115,8 +138,13 @@ public class ProductDaoMemWithJDBC extends JDBCConnection implements ProductDaoW
         return resultList;
     }
 
+    /**
+     * Adds new product into SQL database
+     *
+     * @param product Product
+     */
     @Override
-    public void add(Product product){
+    public void add(Product product) {
         String query = "INSERT INTO products (productId, name, defaultPrice, currencyString," +
                 "description, productCategoryId, supplierId)" +
                 "VALUES ('" + product.getProductId() + "', '" + product.getName() + "', '" + product.getDefaultPrice() +

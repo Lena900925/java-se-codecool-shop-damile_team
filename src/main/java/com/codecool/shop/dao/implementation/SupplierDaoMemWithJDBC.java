@@ -9,11 +9,22 @@ import java.sql.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * <h1>SupplierDaoMemWithJDBC class</h1> inherits from JDBCConnection
+ *
+ * @author arinyu
+ */
 public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDaoWithJDBC {
 
     public SupplierDaoMemWithJDBC() throws IOException {
     }
 
+    /**
+     * Lists all suppliers from the SQL database
+     *
+     * @throws IOException If something went wrong
+     * @return List of all suppliers
+     */
     @Override
     public List<Supplier> getAllSupplier() throws IOException {
         String query = "SELECT * FROM suppliers;";
@@ -24,7 +35,7 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
 
         try {
             Connection connection = getConnection();
-            Statement statement =connection.createStatement();
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
                 Supplier supp = new Supplier(
@@ -32,8 +43,8 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
                         resultSet.getString("name"),
                         resultSet.getString("description")
                 );
-                for(Product prod : products) {
-                    if(prod.getSupplier().getSupplierId().equals(supp.getSupplierId())) {
+                for (Product prod : products) {
+                    if (prod.getSupplier().getSupplierId().equals(supp.getSupplierId())) {
                         supp.addProduct(prod);
                     }
                 }
@@ -46,6 +57,11 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
         return resultList;
     }
 
+    /**
+     * Finds suppliers by the given id from the SQL database
+     *
+     * @return List of the filtered suppliers
+     */
     @Override
     public Supplier findSupplier(int id) {
         String query = "SELECT * FROM suppliers WHERE supplierId ='" + id + "';";
@@ -53,7 +69,7 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
             Connection connection = getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 Supplier supplier = new Supplier(
                         resultSet.getInt(1),
                         resultSet.getString("name"),
@@ -61,7 +77,9 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
                 );
                 connection.close();
                 return supplier;
-            } else {return null;}
+            } else {
+                return null;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,6 +87,11 @@ public class SupplierDaoMemWithJDBC extends JDBCConnection implements SupplierDa
         return null;
     }
 
+    /**
+     * Adds new supplier into SQL database
+     *
+     * @param supplier Supplier supplier
+     */
     @Override
     public void add(Supplier supplier) {
         String query = "INSERT INTO suppliers (supplierId, name, description)" +

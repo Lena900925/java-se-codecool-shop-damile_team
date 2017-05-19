@@ -1,4 +1,5 @@
 package com.codecool.shop.dao.implementation;
+
 import com.codecool.shop.dao.JDBCConnectionDao;
 
 import java.io.BufferedReader;
@@ -6,6 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * <h1>JDBCConnection class</h1> which implements JDBCConnectionDao interface
+ */
 public abstract class JDBCConnection implements JDBCConnectionDao {
 
     private final String DATABASE = "jdbc:postgresql://localhost:5432/codecoolshop";
@@ -15,6 +19,12 @@ public abstract class JDBCConnection implements JDBCConnectionDao {
     protected JDBCConnection() throws IOException {
     }
 
+    /**
+     * Attempts to establish a connection to the given database URL. <p>The DriverManager attempts to select an appropriate driver from the set of registered JDBC drivers.</p>
+     *
+     * @throws SQLException If no connection
+     * @return a connection
+     */
     @Override
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
@@ -22,11 +32,17 @@ public abstract class JDBCConnection implements JDBCConnectionDao {
                 DB_USER,
                 DB_PASSWORD);
     }
+
+    /**
+     * Executes a query from String
+     *
+     * @param query String to be used in SQL query
+     */
     @Override
     public void executeQuery(String query) {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
-        ){
+        ) {
             statement.execute(query);
 
         } catch (SQLException e) {
@@ -34,6 +50,13 @@ public abstract class JDBCConnection implements JDBCConnectionDao {
         }
     }
 
+    /**
+     * Reads the username and password from the given file
+     *
+     * @param textLine Lines of the file
+     * @throws IOException If invalid data or not existing file
+     * @return the data as a String from the connection.txt where username and password are saved.
+     */
     @Override
     public String getDbData(int textLine) throws IOException {
         String UserOrPassword = null;
@@ -42,7 +65,7 @@ public abstract class JDBCConnection implements JDBCConnectionDao {
         int counter = 0;
         while ((line = in.readLine()) != null) {
             counter++;
-            if(counter == textLine) {
+            if (counter == textLine) {
                 UserOrPassword = line;
             }
 

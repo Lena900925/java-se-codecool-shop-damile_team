@@ -18,12 +18,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <h1>Controller class</h1> for managing Product, Supplier and ProductCategory objects.
+ *
+ * @author arinyu
+ */
 public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private static ProductCategory filteredCategory;
     private static Supplier filteredSupplier;
 
+    /**
+     * Renders all products
+     *
+     * @param req request
+     * @param res response
+     * @throws IOException If no connection
+     * @return an ModelAndView object to render a HashMap with the data in html.
+     */
     public static ModelAndView renderProducts(Request req, Response res) throws IOException {
         ProductDaoWithJDBC productDaoWithJDBC = new ProductDaoMemWithJDBC();
         SupplierDaoWithJDBC supplierDaoWithJDBC = new SupplierDaoMemWithJDBC();
@@ -33,13 +46,21 @@ public class ProductController {
         params.put("category", productCategoryDaoWithJDBC.getAllCategories());
         params.put("supplier", supplierDaoWithJDBC.getAllSupplier());
         params.put("products", productDaoWithJDBC.listAllProducts());
-        if (params == null){
+        if (params == null) {
             logger.warn("Products couldn't be loaded! Maybe your database is empty?");
         }
         logger.info("Products have been added successfully!");
         return new ModelAndView(params, "product/index");
     }
 
+    /**
+     * Renders the products filtered by the categories chosen by the user.
+     *
+     * @param req request
+     * @param res response
+     * @throws IOException If no connection
+     * @return an ModelAndView object to render a HashMap with the data in html.
+     */
     public static ModelAndView renderForCategory(Request req, Response res) throws IOException {
         ProductDaoWithJDBC productDaoWithJDBC = new ProductDaoMemWithJDBC();
         SupplierDaoWithJDBC supplierDaoWithJDBC = new SupplierDaoMemWithJDBC();
@@ -61,6 +82,14 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
+    /**
+     * Renders the products filtered by the suppliers chosen by the user.
+     *
+     * @param req request
+     * @param res response
+     * @throws IOException If no connection
+     * @return an ModelAndView object to render a HashMap with the data in html.
+     */
     public static ModelAndView renderForSupplier(Request req, Response res) throws IOException {
         ProductDaoWithJDBC productDaoWithJDBC = new ProductDaoMemWithJDBC();
         SupplierDaoWithJDBC supplierDaoWithJDBC = new SupplierDaoMemWithJDBC();

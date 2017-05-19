@@ -1,4 +1,5 @@
 package com.codecool.shop.dao.implementation;
+
 import com.codecool.shop.dao.ProductCategoryDaoWithJDBC;
 import com.codecool.shop.dao.ProductDaoWithJDBC;
 import com.codecool.shop.model.*;
@@ -7,11 +8,22 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * <h1>ProductCategoryDaoMemWithJDBC class</h1> inherits from JDBCConnection
+ *
+ * @author arinyu
+ */
 public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements ProductCategoryDaoWithJDBC {
 
     public ProductCategoryDaoMemWithJDBC() throws IOException {
     }
 
+    /**
+     * Lists all product categories from the SQL database
+     *
+     * @throws IOException If something went wrong
+     * @return List of all product categories
+     */
     @Override
     public List<ProductCategory> getAllCategories() throws IOException {
         String query = "SELECT * FROM productcategories;";
@@ -30,8 +42,8 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
                         resultSet.getString("department"),
                         resultSet.getString("description")
                 );
-                for(Product prod : products) {
-                    if(prod.getProductCategory().getProductCategoryId().equals(prodCat.getProductCategoryId())) {
+                for (Product prod : products) {
+                    if (prod.getProductCategory().getProductCategoryId().equals(prodCat.getProductCategoryId())) {
                         prodCat.addProduct(prod);
                     }
                 }
@@ -44,6 +56,11 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
         return resultList;
     }
 
+    /**
+     * Finds product categories by the given id from the SQL database
+     *
+     * @return List of the filtered product categories
+     */
     @Override
     public ProductCategory findCategory(int id) {
         String query = "SELECT * FROM productcategories WHERE productCategoryId ='" + id + "';";
@@ -52,7 +69,7 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
             Connection connection = getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 ProductCategory prodCat = new ProductCategory(
                         resultSet.getInt(1),
                         resultSet.getString("name"),
@@ -61,7 +78,9 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
                 );
                 connection.close();
                 return prodCat;
-            } else {return null;}
+            } else {
+                return null;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,6 +88,11 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
         return null;
     }
 
+    /**
+     * Finds product categories by the given name from the SQL database
+     *
+     * @return List of filtered product categories
+     */
     @Override
     public ProductCategory findCategory(String name) {
         String query = "SELECT * FROM productcategories WHERE name ='" + name + "';";
@@ -77,7 +101,7 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
             Connection connection = getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 ProductCategory prodCat = new ProductCategory(
                         resultSet.getInt(1),
                         resultSet.getString("name"),
@@ -86,7 +110,9 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
                 );
                 connection.close();
                 return prodCat;
-            } else {return null;}
+            } else {
+                return null;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,6 +120,11 @@ public class ProductCategoryDaoMemWithJDBC extends JDBCConnection implements Pro
         return null;
     }
 
+    /**
+     * Adds new product category into SQL database
+     *
+     * @param prodCat Product Category
+     */
     @Override
     public void add(ProductCategory prodCat) {
         String query = "INSERT INTO productcategories (productCategoryId, name, department, description)" +
